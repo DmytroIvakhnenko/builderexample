@@ -1,5 +1,4 @@
-package com.company;
+package com.company.builders;
 
 public class InternalSqlBuilder extends DefaultSqlBuilder {
-
 }

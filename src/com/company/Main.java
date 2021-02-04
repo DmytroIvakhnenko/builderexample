@@ -1,19 +1,23 @@
 package com.company;
 
+import com.company.builders.ExternalSqlBuilder;
+
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
-        Director director = new Director();
+        //without director
+        System.out.println(new ExternalSqlBuilder(new RestrictedTables(List.of("Account")))
+                .withColumns(List.of("UserId", "ProductId"))
+                .withTables(List.of("Customer", "User", "Product"))
+                .build()
+                .toString());
 
-        InternalSqlBuilder internalBuilder = new InternalSqlBuilder();
-        director.makeSelectAllCustomersOrderedSql(internalBuilder);
-        System.out.println(internalBuilder.build().toString());
+        //with director
+        Director director = new Director(new RestrictedTables(List.of("User", "Account")));
 
-        ExternalSqlBuilder externalBuilder = new ExternalSqlBuilder(List.of("User", "Role"));
-        director.makeSelectAllSql(externalBuilder);
-        System.out.println(externalBuilder.build().toString());
-
+        System.out.println(director.makeSelectAllCustomersOrderedSql(UserType.INTERNAL).toString());
+        System.out.println(director.makeSelectAllSql(UserType.EXTERNAL).toString());
     }
 }
